@@ -1,0 +1,20 @@
+api_version = "2024-10"
+
+uid = "ec546318-a66e-f76f-5afa-2039cf77bac92da3d741"
+
+type = "web_pixel_extension"
+name = "FFM Web Pixel"
+
+runtime_context = "strict"
+
+[customer_privacy]
+analytics = true
+marketing = true
+preferences = false
+sale_of_data = "enabled"
+
+[settings]
+type = "object"
+
+[settings.fields]
+

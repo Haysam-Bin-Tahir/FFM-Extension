@@ -1,0 +1,11 @@
+[commands]
+dev = "npm exec remix vite:dev"
+build = "npm run build"
+
+[roles]
+1 = "backend"
+2 = "frontend"
+
+[webhooks]
+api_version = "2024-10"
+

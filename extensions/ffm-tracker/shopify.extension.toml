@@ -1,0 +1,15 @@
+api_version = "2024-10"
+
+uid = "da694dca-9aa3-471f-532c-67ee12a8d0a529e58898"
+
+type = "theme_app_extension"
+name = "FFM Tracker"
+
+[settings]
+  [[settings.fields]]
+    key = "enabled"
+    type = "checkbox"
+    label = "Enable FFM Tracking"
+
+    [settings.fields.default]
+      value = true

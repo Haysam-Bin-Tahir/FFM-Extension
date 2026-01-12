@@ -1,0 +1,20 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "3830d972993725a175278c02c27a484b"
+name = "FFM-Tracker"
+handle = "ffm-tracker"
+application_url = "https://localhost:3000"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "ffm-dev-2.myshopify.com"
+
+[webhooks]
+api_version = "2024-10"
+
+[access_scopes]
+scopes = "read_orders,read_script_tags,write_script_tags"
+
+[auth]
+redirect_urls = [ "https://localhost:3000/auth/callback" ]
