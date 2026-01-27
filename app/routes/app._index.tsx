@@ -16,6 +16,7 @@ import {
   Collapsible,
   Button,
   Banner,
+  List,
 } from "@shopify/polaris";
 import { InfoIcon } from "@shopify/polaris-icons";
 import { useState, useEffect } from "react";
@@ -139,6 +140,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     where: { shop: session.shop, status: "success" },
   });
 
+  // Get the API key (client_id) for deep linking to app embeds
+  const apiKey = process.env.SHOPIFY_API_KEY || '';
+
   return json({
     shop: session.shop,
     recentConversions,
@@ -146,6 +150,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     successfulConversions,
     webhookStatus,
     appUrl,
+    apiKey,
   });
 };
 
@@ -343,8 +348,76 @@ function SetupStatusBanner({ webhookStatus }: { webhookStatus: string }) {
   return null;
 }
 
+function AppEmbedSetupCard({ shop, apiKey }: { shop: string; apiKey: string }) {
+  const [dismissed, setDismissed] = useState(false);
+  
+  // Store dismissal in localStorage
+  useEffect(() => {
+    const wasDismissed = localStorage.getItem('ffm_setup_dismissed');
+    if (wasDismissed === 'true') {
+      setDismissed(true);
+    }
+  }, []);
+
+  const handleDismiss = () => {
+    localStorage.setItem('ffm_setup_dismissed', 'true');
+    setDismissed(true);
+  };
+
+  if (dismissed) return null;
+
+  // Deep link URL to directly open and activate the app embed
+  // Format: https://{shop}/admin/themes/current/editor?context=apps&activateAppId={api_key}/{handle}
+  // Reference: https://shopify.dev/docs/apps/build/online-store/theme-app-extensions/configuration
+  const appEmbedHandle = 'app-embed'; // matches the filename: blocks/app-embed.liquid
+  const deepLinkUrl = `https://${shop}/admin/themes/current/editor?context=apps&activateAppId=${apiKey}/${appEmbedHandle}`;
+
+  return (
+    <Banner
+      title="Enable App Embed to Start Tracking"
+      tone="warning"
+      onDismiss={handleDismiss}
+    >
+      <BlockStack gap="400">
+        <Text as="p" variant="bodyMd">
+          FFM Tracker requires the <strong>App Embed</strong> to be enabled in your theme to detect affiliate links and track conversions.
+        </Text>
+        
+        <BlockStack gap="200">
+          <Text as="p" variant="bodySm" fontWeight="semibold">
+            Follow these steps:
+          </Text>
+          <List type="number">
+            <List.Item>
+              Click the button below to open Theme Settings
+            </List.Item>
+            <List.Item>
+              Toggle <strong>"FFM Tracker"</strong> to <strong>ON</strong>
+            </List.Item>
+            <List.Item>
+              Click <strong>Save</strong> in the top right
+            </List.Item>
+          </List>
+        </BlockStack>
+
+        <InlineStack gap="300">
+          <Button 
+            variant="primary"
+            onClick={() => window.open(deepLinkUrl, '_blank')}
+          >
+            Enable App Embed
+          </Button>
+          <Button onClick={handleDismiss} variant="plain">
+            I've already enabled it
+          </Button>
+        </InlineStack>
+      </BlockStack>
+    </Banner>
+  );
+}
+
 export default function Index() {
-  const { recentConversions, totalConversions, successfulConversions, webhookStatus } = useLoaderData<typeof loader>();
+  const { shop, recentConversions, totalConversions, successfulConversions, webhookStatus, apiKey } = useLoaderData<typeof loader>();
   const failedConversions = totalConversions - successfulConversions;
   const successRate = totalConversions > 0 
     ? Math.round((successfulConversions / totalConversions) * 100) 
@@ -353,6 +426,9 @@ export default function Index() {
   return (
     <Page title="FFM Tracker Dashboard">
       <BlockStack gap="600">
+        {/* App Embed Setup Guide - shows until dismissed */}
+        <AppEmbedSetupCard shop={shop} apiKey={apiKey} />
+
         {/* Setup Status Banner */}
         <SetupStatusBanner webhookStatus={webhookStatus} />
 

@@ -37,7 +37,7 @@ interface ConversionPayload {
 }
 
 // Set to true to actually send to FFM API, false to just log
-const SEND_TO_API = false;
+const SEND_TO_API = true;
 
 async function sendConversion(payload: ConversionPayload): Promise<{ success: boolean; response?: string; error?: string }> {
   console.log("========================================");
