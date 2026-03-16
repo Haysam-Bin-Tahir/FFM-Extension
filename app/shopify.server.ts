@@ -10,9 +10,8 @@ import { restResources } from "@shopify/shopify-api/rest/admin/2024-10";
 
 const prisma = new PrismaClient();
 
-// In development, SHOPIFY_APP_URL is set by Shopify CLI
-// Fall back to HOST or VITE_SHOPIFY_APP_URL if needed
-const appUrl = process.env.SHOPIFY_APP_URL || process.env.HOST || "";
+// SHOPIFY_APP_URL is set by Shopify CLI in dev and as a Fly secret in production
+const appUrl = process.env.SHOPIFY_APP_URL || "";
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
