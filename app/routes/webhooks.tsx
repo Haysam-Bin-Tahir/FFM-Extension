@@ -88,8 +88,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (topicString === "ORDERS_PAID" || topicString === "ORDERS_CREATE") {
     await handleOrderPaid(shop, payload as unknown as OrderWebhookPayload);
   } else if (topicString === "APP_UNINSTALLED") {
-    // Clean up session data when app is uninstalled
     console.log(`App uninstalled from ${shop}`);
+  } else if (topicString === "CUSTOMERS_DATA_REQUEST") {
+    console.log(`Customer data request for ${shop}`);
+    // This app only stores conversion logs with order/line item IDs and FFM hashes.
+    // No personal customer data is stored.
+  } else if (topicString === "CUSTOMERS_REDACT") {
+    console.log(`Customer redact request for ${shop}`);
+    // No personal customer data stored — nothing to redact.
+  } else if (topicString === "SHOP_REDACT") {
+    console.log(`Shop redact request for ${shop}`);
+    // Clean up all data for this shop
+    await prisma.conversionLog.deleteMany({ where: { shop } });
+    console.log(`Deleted all conversion logs for ${shop}`);
   } else {
     console.log(`Unhandled webhook topic: ${topicString}`);
   }

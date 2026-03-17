@@ -2,7 +2,7 @@
 
 client_id = "2c9f4d84cffaa98f0f21e99ff828d58d"
 name = "ffm-tracker"
-application_url = "https://example.com"
+application_url = "https://ffm-extension.fly.dev"
 embedded = true
 
 [build]
@@ -11,9 +11,14 @@ automatically_update_urls_on_dev = true
 [webhooks]
 api_version = "2026-04"
 
+  [webhooks.privacy_compliance]
+  customer_deletion_url = "https://ffm-extension.fly.dev/webhooks"
+  customer_data_request_url = "https://ffm-extension.fly.dev/webhooks"
+  shop_deletion_url = "https://ffm-extension.fly.dev/webhooks"
+
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "read_orders,read_script_tags,write_script_tags"
 
 [auth]
-redirect_urls = [ "https://example.com/api/auth" ]
+redirect_urls = [ "https://ffm-extension.fly.dev/api/auth" ]
